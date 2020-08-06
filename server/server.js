@@ -34,6 +34,22 @@ app.post('/api/users/register', (req, res) => {
   })
 })
 
+app.post('/api/users/login', (req, res) => {
+  User.findOne({'email': req.body.email})
+  .then(user => {
+    if(!user) return res.status(404).json({ success:false, errors: { message: 'User email doesn\'t exist.' }})
+
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      if(!isMatch) return res.status(400).json({ success:false, errors: { message: 'Password is incorrect.' }})
+
+      user.generateToken((err, user) => {
+        if(err) return res.status(400).json({ success:false, errors: { message: err }})
+        res.cookie('w_auth', user.token).status(200).json({ success:true, data: user})
+      })
+    })
+  })
+})
+
 const port = process.env.PORT
 
 app.listen(port, () => console.log(`server running on port ${port}`))
