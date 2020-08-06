@@ -9,13 +9,30 @@ require('dotenv').config()
 mongoose.Promise = global.Promise
 const options = {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useCreateIndex: true
 }
-mongoose.connect(`${process.env.DB_URL}${process.env.DN_NAME}`, options)
+mongoose.connect(`${process.env.DB_URL}${process.env.DB_NAME}`, options)
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(cookieParser())
+
+// Models 
+const { User } = require('./models/user')
+
+// Routes Users
+app.post('/api/users/register', (req, res) => {
+  const user = new User(req.body)
+
+  user.save()
+  .then((user) => {
+    return res.status(200).json({ success:true, data: user});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
 
 const port = process.env.PORT
 
