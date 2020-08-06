@@ -1,0 +1,14 @@
+/node_modules
+/build
+/client/node_modules
+
+
+package-lock.json
+
+.DS_STORE
+.env
+
+npm-debug.logs*
+npm-error.logs*
+yarn-debug.logs*
+yarn-error.logs*
