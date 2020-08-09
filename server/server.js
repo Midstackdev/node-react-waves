@@ -21,12 +21,63 @@ app.use(cookieParser())
 
 // Models 
 const { User } = require('./models/user')
+const { Brand } = require('./models/brand')
+const { Wood } = require('./models/wood')
 
 // Middleware
 const { auth } = require('./middleware/auth')
+const { admin } = require('./middleware/admin')
 
 // Routes 
 
+// Wood Routes
+app.post('/api/product/wood', auth,admin, (req, res) => {
+  const wood = new Wood(req.body)
+
+  wood.save()
+  .then((wood) => {
+    return res.status(200).json({ success:true, data: wood});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
+app.get('/api/product/wood', auth, (req, res) => {
+  Wood.find({})
+  .then((woods) => {
+    return res.status(200).json({ success:true, data: woods});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
+// Brand Routes
+app.post('/api/product/brand', auth,admin, (req, res) => {
+  const brand = new Brand(req.body)
+
+  brand.save()
+  .then((brand) => {
+    return res.status(200).json({ success:true, data: brand});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
+app.get('/api/product/brand', auth, (req, res) => {
+  Brand.find({})
+  .then((brands) => {
+    return res.status(200).json({ success:true, data: brands});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
+
+// User Routes
 app.get('/api/users/auth', auth, (req, res) => {
   return res.status(200).json({ success:true, data: User.allowedValues(req.user)});
 })
