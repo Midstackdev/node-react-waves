@@ -10,7 +10,8 @@ mongoose.Promise = global.Promise
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false
 }
 mongoose.connect(`${process.env.DB_URL}${process.env.DB_NAME}`, options)
 
@@ -21,7 +22,15 @@ app.use(cookieParser())
 // Models 
 const { User } = require('./models/user')
 
-// Routes Users
+// Middleware
+const { auth } = require('./middleware/auth')
+
+// Routes 
+
+app.get('/api/users/auth', auth, (req, res) => {
+  return res.status(200).json({ success:true, data: User.allowedValues(req.user)});
+})
+
 app.post('/api/users/register', (req, res) => {
   const user = new User(req.body)
 
@@ -47,6 +56,16 @@ app.post('/api/users/login', (req, res) => {
         res.cookie('w_auth', user.token).status(200).json({ success:true, data: user})
       })
     })
+  })
+})
+
+app.get('/api/users/logout', auth, (req,res) => {
+  User.findByIdAndUpdate({_id: req.user._id}, {token: ''})
+  .then(() => {
+    return res.status(200).json({ success:true, data: {}})
+  })
+  .catch(err => {
+    return res.status(400).json({ success:false, errors: err})
   })
 })
 

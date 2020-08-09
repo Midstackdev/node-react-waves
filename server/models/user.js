@@ -81,6 +81,30 @@ userSchema.methods.generateToken = function(cb) {
   })
 }
 
+userSchema.statics.findByToken = function (token, cb) {
+  let user = this
+
+  jwt.verify(token, process.env.JWT_TOKEN_SECRET, function(err, decode) {
+    user.findOne({'_id': decode, 'token':token}, function(err, user) {
+      if(err) return cb(err)
+      cb(null, user)
+    })
+  })
+}
+
+userSchema.statics.allowedValues = (user) => {
+  return {
+    isAdmin: user.role === 0 ? false : true,
+    isAuth: true,
+    email: user.email,
+    name: user.name,
+    lastname: user.lastname,
+    role: user.role,
+    cart: user.cart,
+    history: user.history,
+  }
+}
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = { User }
