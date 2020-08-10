@@ -23,12 +23,82 @@ app.use(cookieParser())
 const { User } = require('./models/user')
 const { Brand } = require('./models/brand')
 const { Wood } = require('./models/wood')
+const { Product } = require('./models/products')
 
 // Middleware
 const { auth } = require('./middleware/auth')
 const { admin } = require('./middleware/admin')
 
 // Routes 
+
+// Products Routes
+app.post('/api/product/article', auth,admin, (req, res) => {
+  const product = new Product(req.body)
+
+  product.save()
+  .then((product) => {
+    return res.status(200).json({ success:true, data: product});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
+// /api/product/articles?sort=sold&order=desc&limit=4&skip=5 
+app.get('/api/product/articles', auth,admin, (req, res) => {
+  let order = req.query.order ? req.query.order : 'asc'
+  let sort = req.query.sort ? req.query.sort : '_id'
+  let limit = req.query.limit ? parseInt(req.query.limit) : 100
+  let skip = req.query.skip ? req.query.skip : 0
+
+  Product.find({})
+  .populate('brand')
+  .populate('wood')
+  .sort([[sort, order]])
+  .limit(limit)
+  .exec()
+  .then((products) => {
+    return res.status(200).json({ success:true, data: products});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
+// /api/product/article?=id=FHEJWBS&type=single 
+app.get('/api/product/article', auth,admin, (req, res) => {
+  let type = req.query.type
+  let items = []
+
+  if(type === 'array') {
+    let ids = req.query.ids.split(',')
+    items = ids.map(item => {
+      return mongoose.Types.ObjectId(item)
+    })
+    console.log(items)
+  }
+  Product.find({'_id':{$in:items}})
+  .populate('brand')
+  .populate('wood')
+  .exec()
+  .then((products) => {
+    return res.status(200).json({ success:true, data: products});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
+app.get('/api/product/article/:id', auth,admin, (req, res) => {
+  Product.find({})
+  .then((products) => {
+    return res.status(200).json({ success:true, data: products});
+  })
+  .catch(error => {
+    return res.status(400).json({ success:false, errors: error});
+  })
+})
+
 
 // Wood Routes
 app.post('/api/product/wood', auth,admin, (req, res) => {
