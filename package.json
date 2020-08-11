@@ -6,6 +6,8 @@
   "scripts": {
     "start": "nodemon server/server.js",
     "server": "nodemon server/server.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\"  \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Midstackdev",
@@ -20,7 +22,6 @@
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.27.0",
     "mongoose": "^5.9.27",
     "multer": "^1.4.2"
   },

@@ -19,6 +19,12 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(cookieParser())
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // Models 
 const { User } = require('./models/user')
 const { Brand } = require('./models/brand')
@@ -113,7 +119,7 @@ app.post('/api/product/wood', auth,admin, (req, res) => {
   })
 })
 
-app.get('/api/product/wood', auth, (req, res) => {
+app.get('/api/product/wood', (req, res) => {
   Wood.find({})
   .then((woods) => {
     return res.status(200).json({ success:true, data: woods});
@@ -136,7 +142,7 @@ app.post('/api/product/brand', auth,admin, (req, res) => {
   })
 })
 
-app.get('/api/product/brand', auth, (req, res) => {
+app.get('/api/product/brand', (req, res) => {
   Brand.find({})
   .then((brands) => {
     return res.status(200).json({ success:true, data: brands});
