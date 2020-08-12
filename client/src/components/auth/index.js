@@ -13,7 +13,7 @@ const RegisterLogin = () => {
             <MyButton 
               type="default"
               title="Create an account"
-              linkTo="/regsiter"
+              linkTo="/register"
               addStyles={{
                 margin: '10px 0 0 0'
               }}
