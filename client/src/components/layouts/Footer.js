@@ -45,7 +45,7 @@ class Footer extends Component {
                   />
                   <div className="nfo">
                     <div>Working hours</div>
-                    <div>Mon-Sun/ 9am-*pm</div>
+                    <div>Mon-Sun/ 9am-8pm</div>
                   </div>
                 </div>
                 <div className="tag">
