@@ -10,7 +10,7 @@ class Header extends Component {
               Waves
             </div>
           </div>
-          <div className="rigth">
+          <div className="right">
             <div className="top">
               Links
             </div>
