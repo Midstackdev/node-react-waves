@@ -31,7 +31,8 @@ export default function (ComposedClass, reload, adminRoute = null) {
             loading: false
           })
         }).catch(error => {
-          if(!error.response.data.success) {
+          console.log(error.response)
+          if(error.response.data.success) {
             if(reload) {
               this.props.history.push('/auth')
             }

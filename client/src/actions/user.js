@@ -33,7 +33,7 @@ export const auth = () => {
   const request = axios.get(`${USER_ROUTES}/auth`)
                     .then(response => 
                       response.data
-                    )
+                    ).catch(error => error.response)
   return {
     type: AUTH_USER,
     payload: request
